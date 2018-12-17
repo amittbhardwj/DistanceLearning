@@ -15,7 +15,7 @@ class Teacher(models.Model):
     
 class Course(models.Model):
     name = models.CharField(max_length=255)
-    instructor = models.OneToOneField(Teacher)
+    instructor = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     students = models.ManyToManyField(Student,blank=True, null = True)
     capacity = models.PositiveSmallIntegerField()
     start_date = models.DateTimeField()

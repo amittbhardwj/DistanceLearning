@@ -10,8 +10,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView
 
 #from ..decorators import student_required
-from .forms import  StudentSignUpForm, TeacherSignUpForm
-from .models import Student,Teacher, User
+from .forms import  StudentSignUpForm, TeacherSignUpForm, CourseForm
+from .models import Student,Teacher, User, Course
 
 
 class StudentSignUpView(CreateView):
@@ -38,7 +38,17 @@ class TeacherSignUpView(CreateView):
         login(self.request, user)
         return redirect('home')
 
+class CourseCreate(CreateView):
+    model =  Course
+    form_class = CourseForm
+    template_name = 'course_create.html'
 
+    def form_valid(self,form):
+        course = form.save(commit=False)
+        course.instructor = self.request.user.teacher
+        course.save()
+        return redirect('teacher_dashboard')
+        
 
 class SignUpView(TemplateView):
     template_name = 'registration/signup.html'
@@ -46,6 +56,25 @@ class SignUpView(TemplateView):
 
 def home(request):
     if request.user.is_authenticated:
-        return HttpResponse("Logged IN")
+        if request.user.is_student:
+           return redirect('student_dashboard')
+
+        if request.user.is_teacher:
+            return redirect('teacher_dashboard')
+        
         
     return render(request, 'home.html')
+
+class StudentDashBoard(ListView):
+    model = Course
+    template_name = 'student_dashboard.html'
+
+
+class TeacherDashBoard(ListView):
+    model = Course
+    template_name = 'teacher_dashboard.html'
+
+    def get_queryset(self):
+        result = Course.objects.filter(instructor=self.request.user.teacher)
+        return result
+

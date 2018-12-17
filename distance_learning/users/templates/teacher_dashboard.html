@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+Welcome to Teacher Dashboard
+
+ <a href="{% url 'create_course' %}" class="btn btn-student btn-lg" role="button">Create Course</a>
+{% for course in course_list %}
+<p>{{course}}</p>
+{% endfor%}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+Welcome to Student Dashboard
+
+{% for course in course_list %}
+<p>{{course}}</p>
+{% endfor%}
+{% endblock %}
