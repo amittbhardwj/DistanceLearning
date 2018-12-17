@@ -2,5 +2,5 @@ from django.conf.urls import url
 from .views import home
 
 urlpatterns = [
-    url('', home),
+    url(r'^$', home,name='home'),
 ]
