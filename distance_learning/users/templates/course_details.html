@@ -3,7 +3,7 @@
 <h1>Title: {{ course.name }}</h1>
 
   <p><strong>Instructor:</strong> {{ course.instructor }}</p> <!-- author detail link not yet defined -->
-  <p><strong>Capacity:</strong> {{ book.capacity }}</p>
+  <p><strong>Capacity:</strong> {{ course.capacity }}</p>
   <p><strong>Duration</strong> From {{ course.start_date }} to {{course.end_date}}</p> 
   {% if request.user.is_student %}
   {% if request.user.student in course.students.all %}

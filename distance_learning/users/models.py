@@ -26,7 +26,7 @@ class Course(models.Model):
     name = models.CharField(max_length=255)
     instructor = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     students = models.ManyToManyField(Student,blank=True, null = True)
-    capacity = models.PositiveSmallIntegerField()
+    capacity = models.IntegerField()
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     SUN = 0
