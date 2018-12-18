@@ -53,3 +53,12 @@ class Course(models.Model):
 
     def __str__(self):
         return(self.name)
+
+class Chat(models.Model):
+    course= models.ForeignKey(Course)
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User)
+    message = models.TextField()
+
+    def __unicode__(self):
+        return self.message

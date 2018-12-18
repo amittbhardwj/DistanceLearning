@@ -1,0 +1,144 @@
+{% load staticfiles %}
+
+<html>
+
+<head>
+    <div><title>Chat Panel</title></div>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'chat.css' %}">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
+</head>
+
+<body>
+    <div id="chat-body" class="panel panel-default">
+        <div class="panel-heading">Chat Room {{course_id}}</div>
+        <a href="{% url 'home'  %}" class="btn btn-student btn-lg" role="button">Home</a>
+        <div id="msg-list-div" class="panel-body">
+            <ul id="msg-list" class="list-group">
+              
+                {% for obj in chat %}
+                        {%if obj.user.username == "Robot"%}
+                        <li class="list-group-item-item" style="font-size:20px;color:red"><center>{{ obj.message }}</center></li>
+                      
+                        {%elif obj.user == request.user and obj.user.username != "Robot"%}
+                        <li class="text-right list-group-item">{{ obj.message }}</li>
+                            {%else%}
+                        <li class="text-left list-group-item">{{ obj.message }}</li>
+                        {%endif%}   
+                        {% empty %}
+                        <li class="text-right list-group-item">No messages yet!</li>
+                {% endfor %}
+                <script>
+                    var chatlist = document.getElementById('msg-list-div');
+                    chatlist.scrollTop = chatlist.scrollHeight;
+                </script>
+            </ul>
+
+        </div>
+    </div>
+
+    <form id="chat-form" method="post" action="/post/{{course_id}}/">
+   
+        <div id="chat-bottom" class="input-group">
+            <input type="text" id="chat-msg" name="chat-msg" class="form-control"/>
+            <span class="input-group-btn">
+            <div>
+                <input class="btn btn-primary" id="send" type="submit" value="Send"/>
+            </div>
+
+            </span>
+        </div>
+    </form>
+</body>
+<script>
+$('#chat-form').on('submit', function(event){
+    event.preventDefault();
+
+    $.ajax({
+        url : '/post/{{course_id}}/',
+        type : 'POST',
+        data : { 'chat-msg' : $('#chat-msg').val() },
+
+        success : function(json){
+            console.log(json);
+            $('#chat-msg').val('');
+            $('#msg-list').append('<li class="text-right list-group-item">' + json.msg + '</li>');
+            var chatlist = document.getElementById('msg-list-div');
+            chatlist.scrollTop = chatlist.scrollHeight;
+        }
+    });
+});
+
+
+
+function getMessages(){
+    if (!scrolling) {
+        $.get('/messages/{{course_id}}/', function(messages){
+            console.log(messages);
+            $('#msg-list').html(messages);
+            var chatlist = document.getElementById('msg-list-div');
+            chatlist.scrollTop = chatlist.scrollHeight;
+        });
+    }
+    scrolling = false;
+}
+
+var scrolling = false;
+$(function(){
+    $('#msg-list-div').on('scroll', function(){
+        scrolling = true;
+    });
+    refreshTimer = setInterval(getMessages, 100);
+});
+
+$(document).ready(function() {
+     $('#send').attr('disabled','disabled');
+     $('#chat-msg').keyup(function() {
+        if($(this).val() != '') {
+            $('#send').removeAttr('disabled');
+        }
+        else {
+            $('#send').attr('disabled','disabled');
+        }
+     });
+ });
+
+// using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+</script>
+</html>

@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -11,7 +11,7 @@ from django.views.generic import CreateView, ListView, UpdateView, TemplateView,
 
 #from ..decorators import student_required
 from .forms import  StudentSignUpForm, TeacherSignUpForm, CourseForm
-from .models import Student,Teacher, User, Course
+from .models import Student,Teacher, User, Course, Chat
 
 
 class StudentSignUpView(CreateView):
@@ -114,4 +114,36 @@ def enroll(request,course_id):
     course.save()
 
     return render(request,'enroll_sucess.html')
+
+
+def Post(request,course_id):
+    if request.method == "POST":
+        print(request.POST)
+        msg = request.POST.get('chat-msg', None)
+        username = request.user.username
+        print(msg)
+        c = Chat(user=request.user, message=username +" : "+msg,course=Course.objects.get(id=course_id))
+
+        #if(msg[0:6] == "Robot:"):
+        #callRobot(msg, request)
+            
+        
+        #msg = request.user.username+": "+msg
+
+       # c = Chat(user=request.user, message=msg)
+
+        if msg != '':            
+            c.save()
+        #mg = src="https://scontent-ord1-1.xx.fbcdn.net/hprofile-xaf1/v/t1.0-1/p160x160/11070096_10204126647988048_6580328996672664529_n.jpg?oh=f9b916e359cd7de9871d8d8e0a269e3d&oe=576F6F12"
+        return redirect('chathome',course_id=course_id)
+    else:
+        return HttpResponse('Request must be POST.')
+
+def Messages(request,course_id):
+    c = Chat.objects.filter(course=course_id)
+    return render(request, 'alpha/messages.html', {'chat': c})
+
+def Home(request,course_id):
+    c = Chat.objects.filter(course=course_id)
+    return render(request, "alpha/home.html", {'home': 'active', 'chat': c, 'course_id':course_id})
 

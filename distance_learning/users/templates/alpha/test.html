@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Hello MonkeyBomb</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link href="css/style.css" rel="stylesheet">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+ {% csrf_token %}
+
+
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<form role="form">
+				<div class="form-group">
+					 
+					<label for="exampleInputEmail1">
+						User ID
+					</label>
+					<input type="text" class="form-control"  name="username">
+				</div>
+				<div class="form-group">
+					 
+					<label for="exampleInputPassword1">
+						Password
+					</label>
+					<input type="password" name="password" class="form-control">
+				</div>
+			
+			
+				<button type="submit" value="Login" class="btn btn-default">
+					Submit
+				</button>
+			</form>
+		</div>
+	</div>
+	</div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>
