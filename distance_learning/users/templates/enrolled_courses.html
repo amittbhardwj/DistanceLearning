@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
-
 {% block content %}
 Welcome to Student Dashboard
-<a href="{% url 'enrolled_courses' %}" class="btn btn-student btn-lg" role="button">Check Enrolled Courses</a>
 {% if course_list %}
 {% for course in course_list %}
 <p>{{course.name}} {{course.instructor}} <a href="{% url 'course_detail' course.id %}" class="btn btn-student btn-lg" role="button">View Course</a></p>
 {% endfor%}
 {% else %}
-<h2>No Available Courses To Enroll in, Check Enrolled Courses</h2>
+<h2>No Courses Enrolled</h2>
 {% endif %}
 {% endblock %}

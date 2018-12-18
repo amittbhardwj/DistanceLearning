@@ -9,7 +9,7 @@ from .models import Student, Teacher, User, Course
 class TeacherSignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('first_name', 'last_name', 'email','username')
 
 
     def save(self, commit=True):
@@ -25,7 +25,7 @@ class StudentSignUpForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('first_name', 'last_name', 'email','username')
 
 
     @transaction.atomic

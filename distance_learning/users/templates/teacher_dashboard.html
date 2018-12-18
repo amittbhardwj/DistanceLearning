@@ -5,6 +5,6 @@ Welcome to Teacher Dashboard
 
  <a href="{% url 'create_course' %}" class="btn btn-student btn-lg" role="button">Create Course</a>
 {% for course in course_list %}
-<p>{{course}}</p>
+<p>{{course}} <a href="{% url 'course_detail' course.id %}" class="btn btn-student btn-lg" role="button">View Course</a></p>
 {% endfor%}
 {% endblock %}

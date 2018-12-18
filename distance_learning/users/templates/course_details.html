@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content%}
+<h1>Title: {{ course.name }}</h1>
+
+  <p><strong>Instructor:</strong> {{ course.instructor }}</p> <!-- author detail link not yet defined -->
+  <p><strong>Capacity:</strong> {{ book.capacity }}</p>
+  <p><strong>Duration</strong> From {{ course.start_date }} to {{course.end_date}}</p> 
+  {% if request.user.is_student %}
+  {% if request.user.student in course.students.all %}
+  {% else %}
+  <a href="{% url 'enroll' course.id %}" class="btn btn-student btn-lg" role="button">Enroll into Course</a>
+   {% endif %}
+    {% endif %}
+ {% if request.user.is_teacher %}
+ <h2>List of enrolled Students<h2>
+ {% for student in course.students.all %}
+ 
+ <p>{{ forloop.counter }} {{student}}</p>
+ {% endfor %}
+ {% endif %}
+{% endblock%}

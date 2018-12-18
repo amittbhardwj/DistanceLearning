@@ -7,7 +7,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, ListView, UpdateView, TemplateView
+from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DetailView
 
 #from ..decorators import student_required
 from .forms import  StudentSignUpForm, TeacherSignUpForm, CourseForm
@@ -68,7 +68,31 @@ def home(request):
 class StudentDashBoard(ListView):
     model = Course
     template_name = 'student_dashboard.html'
+    context_object_name = "course_list"
 
+    def get_queryset(self):
+        result = []
+        course = Course.objects.all()
+        for i in course:
+            if self.request.user.student not in i.students.all():
+                result.append(i)
+        print(result)   
+        return result
+
+class EnrolledCourses(ListView):
+    model = Course
+    template_name = 'enrolled_courses.html'
+    context_object_name = "course_list"
+
+    def get_queryset(self):
+        result = []
+        course = Course.objects.all()
+        for i in course:
+            print(self.request.user.student,i.students.all())
+            if self.request.user.student in i.students.all():
+                result.append(i)
+        print(result)    
+        return result
 
 class TeacherDashBoard(ListView):
     model = Course
@@ -77,4 +101,17 @@ class TeacherDashBoard(ListView):
     def get_queryset(self):
         result = Course.objects.filter(instructor=self.request.user.teacher)
         return result
+
+
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = 'course_details.html'
+
+
+def enroll(request,course_id):
+    course = Course.objects.get(id=course_id)
+    course.students.add(request.user.student)
+    course.save()
+
+    return render(request,'enroll_sucess.html')
 
